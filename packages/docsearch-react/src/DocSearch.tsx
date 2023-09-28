@@ -14,7 +14,6 @@ import type {
   InternalDocSearchHit,
   StoredDocSearchHit,
 } from './types';
-import { useDocSearchKeyboardEvents } from './useDocSearchKeyboardEvents';
 
 import type { ButtonTranslations, ModalTranslations } from '.';
 
@@ -50,10 +49,6 @@ export interface DocSearchProps {
 export function DocSearch(props: DocSearchProps) {
   const searchButtonRef = React.useRef<HTMLButtonElement>(null);
   const [isOpen, setIsOpen] = React.useState(false);
-  const [initialQuery, setInitialQuery] = React.useState<string | undefined>(
-    props?.initialQuery || undefined
-  );
-
   const onOpen = React.useCallback(() => {
     setIsOpen(true);
   }, [setIsOpen]);
@@ -61,22 +56,6 @@ export function DocSearch(props: DocSearchProps) {
   const onClose = React.useCallback(() => {
     setIsOpen(false);
   }, [setIsOpen]);
-
-  const onInput = React.useCallback(
-    (event: KeyboardEvent) => {
-      setIsOpen(true);
-      setInitialQuery(event.key);
-    },
-    [setIsOpen, setInitialQuery]
-  );
-
-  useDocSearchKeyboardEvents({
-    isOpen,
-    onOpen,
-    onClose,
-    onInput,
-    searchButtonRef,
-  });
 
   return (
     <>
@@ -91,7 +70,6 @@ export function DocSearch(props: DocSearchProps) {
           <DocSearchModal
             {...props}
             initialScrollY={window.scrollY}
-            initialQuery={initialQuery}
             translations={props?.translations?.modal}
             onClose={onClose}
           />,
